@@ -7,7 +7,7 @@ The **Pizzeria Orders Management API** is a RESTful Web API designed to manage o
 ## Features
 
 - 📦 **Order Management** – Create, update, and delete orders.
-- 🍕 **Menu Management** – Add, update, and remove menu items.
+- 🍕 **Pizza Management** – Create, update, and delete pizzas.
 - 🧑‍🍳 **Customer Handling** – Register new customers and manage their data.
 - 📊 **Order Tracking** – Monitor order status and track their progress.
 - 🔒 **Authentication & Authorization** – Secure endpoints with Cookies authentication.
@@ -56,17 +56,20 @@ The **Pizzeria Orders Management API** is a RESTful Web API designed to manage o
 
 ## API Endpoints
 
-### Orders
+### Orders (Requires authorization)
 
 - **POST /orders** – Create a new order.
 - **GET /orders/{id}** – Retrieve an order by ID.
 - **PUT /orders/{id}** – Update an order's status.
 - **DELETE /orders/{id}** – Cancel an order.
+- **POST /orders/getToWork** Sends order to couriers group with a customer location
 
-### Customers
-
-- **POST /api/customers** – Register a new customer.
-- **GET /api/customers/{id}** – Retrieve customer details.
+### Pizza
+- **POST /pizza** – Create a new order.
+- **GET /pizza/{id}** – Retrieve all pizzas available.
+- **GET /pizza/{id}** – Retrieve an pizza by ID.
+- **PUT /pizza/{id}** – Update an pizza status.
+- **DELETE /pizza/{id}** – Deletes pizza.
 
 ## Authentication
 
@@ -87,4 +90,21 @@ The **Pizzeria Orders Management API** is a RESTful Web API designed to manage o
 ## Testing
 
 - Use Postman or Swagger at `/swagger/index.html` to test API endpoints.
+
+## Prepared user to login:
+**Admin:**
+Email: admin1@gmail.com
+Password: Admin123
+
+**Courier:**
+Email: courier1.pizzameow@gmail.com
+Password: Courier123
+
+**User:**
+Email: user1.pizzameow.stas@gmail.com
+Password: User123
+
+## Project not completed yet
+**It can still have issues**
+
 
