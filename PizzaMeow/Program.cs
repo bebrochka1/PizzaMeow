@@ -20,8 +20,11 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("C:\\Users\\User\\source\\repos\\PizzaMeow\\PizzaMeow\\appsettings.Secret..json");
+
 Register(builder.Services);
-builder.WebHost.UseUrls("http://0.0.0.0:5000");
+builder.WebHost.UseUrls("http://localhost:5289");
+
 
 var app = builder.Build();
 
@@ -112,7 +115,7 @@ void Configure(WebApplication app)
     {
         var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        db.Database.EnsureCreated();
+        db.Database.Migrate();
         app.UseSwagger();
         app.UseSwaggerUI();
     }
