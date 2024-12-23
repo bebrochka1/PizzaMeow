@@ -1,0 +1,6 @@
+@CouriesBot_HostAddress = http://localhost:5210
+
+GET {{CouriesBot_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
