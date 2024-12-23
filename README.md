@@ -1,4 +1,4 @@
-# Pizzeria Orders Management API
+# Pizza Meow API
 
 ## Project Overview
 
