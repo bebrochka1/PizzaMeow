@@ -105,6 +105,6 @@ Email: user1.pizzameow.stas@gmail.com
 Password: User123
 
 ## Project not completed yet
-**It contaIns many issues yet. Some parts of functionallity can has unpredicatable behavior**
+**It contaIns many issues yet. Some parts of functionallity has unpredicatable behavior**
 
 
