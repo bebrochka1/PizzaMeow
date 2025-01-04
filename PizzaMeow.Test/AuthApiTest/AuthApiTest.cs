@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using PizzaMeow.Apis;
+using PizzaMeow.Application.DTOs;
 using PizzaMeow.Data.Models;
 using PizzaMeow.Data.Repos;
 using System;
@@ -32,7 +33,7 @@ namespace PizzaMeow.Test.AuthApiTest
 
             var api = new AuthApi();
 
-            var testUserLoginDTO = new UserLoginDTO("TestEmail", "TestWrongPassword");
+            var testUserLoginDTO = new UseLoginDTO { Email = "TestEmail", Password = "TestWrongPassword" };
 
             var testUser = new User
             {

@@ -19,6 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PizzaMeow.Application\PizzaMeow.Application.csproj" />
+    <ProjectReference Include="..\PizzaMeow.Domain\PizzaMeow.Domain.csproj" />
     <ProjectReference Include="..\PizzaMeow\PizzaMeow.csproj" />
   </ItemGroup>
 

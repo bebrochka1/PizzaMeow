@@ -8,35 +8,40 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using PizzaMeow.Apis;
+using PizzaMeow.Application.DTOs;
 using PizzaMeow.Data;
 using PizzaMeow.Data.Models;
 using PizzaMeow.Data.Repos;
 using PizzaMeow.Data.Validation;
 using PizzaMeow.GoogleMaps;
+using PizzaMeow.Infrastructure.DataAccess.Repositories;
 using PizzaMeow.OrderService;
 using PizzaMeow.TelegramBotService;
 using PizzaMeow.TelegramBotService.Controllers;
 using System.Security.Claims;
+using PizzaMeow.Infrastructure;
+using PizzaMeow.Application.Services.PizzaSerivice;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("C:\\Users\\User\\source\\repos\\PizzaMeow\\PizzaMeow\\appsettings.Secret..json");
+builder.Configuration.AddJsonFile("C:\\Users\\User\\source\\repos\\PizzaMeow\\PizzaMeow\\appsettings.Secret.json");
 
 Register(builder.Services);
-builder.WebHost.UseUrls("http://localhost:5289");
-
 
 var app = builder.Build();
 
 Configure(app);
 
-var apis = app.Services.GetServices<IApi>();
+var pizzaApi = app.Services.GetService<PizzaApi>();
+var orderApi = app.Services.GetService<OrderApi>();
+var userApi = app.Services.GetService<UserApi>();
+var authApi = app.Services.GetService<AuthApi>();
 
-foreach (var api in apis)
-{
-    if (api is null) throw new InvalidProgramException("Api not found");
-    api.Register(app);
-}
+pizzaApi?.Register(app);
+orderApi?.Register(app);
+userApi?.Register(app);
+authApi?.Register(app);
 
 app.MapGet("/", () => "Hello World!");
 
@@ -78,17 +83,19 @@ void Register(IServiceCollection services)
     });
 
     services.AddTransient<OrderService>();
+    services.AddTransient<PizzaService>();
 
-    services.AddScoped<IPizzaRepository, PizzaRepository>();
     services.AddScoped<IOrderRepository, OrderRepository>();
+    services.AddScoped<IPizzaRepository, PizzaRepository>();
+
     services.AddScoped<IUserRepository, UserRepository>();
     services.AddScoped<IRoleRepository, RoleRepository>();
 
-    services.AddTransient<IApi, PizzaApi>();
-    services.AddTransient<IApi, OrderApi>();
-    services.AddTransient<IApi, UserApi>();
-    services.AddTransient<IApi, AuthApi>();
-    services.AddTransient<IApi, TelegramBotApi>();
+    services.AddTransient<PizzaApi>();
+    services.AddTransient<OrderApi>();
+    services.AddTransient<UserApi>();
+    services.AddTransient<AuthApi>();
+    //services.AddTransient<IApi, TelegramBotApi>();
 
     services.AddScoped<IValidator<UserRegisterDTO>, UserValidator>();
     services.AddScoped<IValidator<PizzaDTO>, PizzaValidator>();
@@ -119,6 +126,8 @@ void Configure(WebApplication app)
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+
+    app.MapSwagger().RequireAuthorization();
 
     app.UseHttpsRedirection();
 }

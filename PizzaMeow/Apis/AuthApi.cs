@@ -9,6 +9,8 @@ using FluentValidation;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using PizzaMeow.Application.DTOs;
+using PizzaMeow.Application.Mappers;
 
 namespace PizzaMeow.Apis
 {
@@ -75,12 +77,10 @@ namespace PizzaMeow.Apis
 
                         ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
 
-                        await repos.AddUserAsync(userDTO);
+                        await repos.AddUserAsync(userDTO.ToEntity());
                         await repos.SaveAsync();
 
                         await context.SignInAsync("Cookies", new ClaimsPrincipal(claimsIdentity));
-                        var userInDb = await repos.GetUserAsync(userDTO.Email);
-                        Console.WriteLine(userInDb.PasswordHashed);
                         return Results.Created();
                     }
                     else

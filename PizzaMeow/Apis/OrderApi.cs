@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PizzaMeow.Application.DTOs;
+using PizzaMeow.Data;
+using PizzaMeow.Data.DataProcessing.OrderProccessing;
+using PizzaMeow.Data.DataProcessing.PizzaProccessing;
 using PizzaMeow.Data.Models;
 using PizzaMeow.Data.Repos;
 using PizzaMeow.GoogleMaps;
@@ -50,7 +54,12 @@ namespace PizzaMeow.Apis
                 .WithName("Delete order by ID")
                 .WithTags("Order");
 
-            app.MapGet("/orders", [Authorize(Roles = "Admin, Courier")] async (IOrderRepository orderRepository) => await orderRepository.GetOrderAsync())
+            app.MapGet("/orders", [Authorize(Roles = "Admin, Courier")]
+            async (
+                OrderService.OrderService orderRepository,
+                [AsParameters] OrderFilter orderFilter,
+                [AsParameters] OrderSort orderSortBy,
+                [AsParameters] OrderPagination orderPagination) => await orderRepository.GetPageResults(orderFilter, orderSortBy, orderPagination))
                 .Produces<List<Order>>(StatusCodes.Status200OK)
                 .WithName("Get all orders")
                 .WithTags("Order");
@@ -139,6 +148,7 @@ namespace PizzaMeow.Apis
             app.MapPost("/orders/getToWork", async (
                 OrderService.OrderService orderService,
                 [FromBody] OrderCreateDTO orderDTO,
+                AppDbContext context,
                 IOrderRepository orderRepository,
                 IPizzaRepository pizzaRepository,
                 TelegramBotService.TelegramBotService telegramBot,

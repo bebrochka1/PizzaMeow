@@ -1,9 +1,13 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PizzaMeow.Application.DTOs;
 using PizzaMeow.Data.DataProcessing.PizzaProccessing;
 using PizzaMeow.Data.Models;
 using PizzaMeow.Data.Repos;
+using PizzaMeow;
+using PizzaMeow.Application.Mappers;
+using PizzaMeow.Application.Services.PizzaSerivice;
 
 namespace PizzaMeow.Apis
 {
@@ -11,8 +15,12 @@ namespace PizzaMeow.Apis
     {
         public void Register(WebApplication app) 
         {
-            app.MapGet("/pizza", async (IPizzaRepository repository, [AsParameters] PizzaFilter filter, [AsParameters] PizzaSort sortBy, [AsParameters] PizzaPagination pagination)
-                => await repository.GetPizzasAsync(filter, sortBy, pagination))
+            app.MapGet("/pizza", async (
+                PizzaService pizzaService,
+                [AsParameters] PizzaFilter pizzaFilter,
+                [AsParameters] PizzaSort pizzaSortBy,
+                [AsParameters] PizzaPagination pizzaPagination)
+                => await pizzaService.GetPageResults(pizzaFilter, pizzaSortBy, pizzaPagination))
                 .Produces<List<Pizza>>(StatusCodes.Status200OK)
                 .WithName("Get all pizza")
                 .WithTags("Pizza");
@@ -39,7 +47,7 @@ namespace PizzaMeow.Apis
                     var validationResults = await validator.ValidateAsync(pizzaDTO);
                     if(validationResults.IsValid)
                     {
-                        await repository.AddPizzaAsync(pizzaDTO);
+                        await repository.AddPizzaAsync(pizzaDTO.ToEntity());
                         await repository.Save();
                         return Results.Created();
                     }
