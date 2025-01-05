@@ -36,7 +36,7 @@ The **Pizzeria Orders Management API** is a RESTful Web API designed to manage o
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/pizzeria-api.git
+   git clone https://github.com/bebrochka1/PizzaMeow.git
    cd pizzeria-api
    ```
 2. Set up the database connection in `appsettings.json`:
@@ -45,6 +45,7 @@ The **Pizzeria Orders Management API** is a RESTful Web API designed to manage o
      "DefaultConnection": "Server=localhost;Database=PizzaMeow;Trusted_Connection=True;"
    }
    ```
+4. Don't forget also to setup your Telegram Bot and providing API key, the same actions to Google Maps Api
 3. Apply database migrations:
    ```bash
    dotnet ef database update
