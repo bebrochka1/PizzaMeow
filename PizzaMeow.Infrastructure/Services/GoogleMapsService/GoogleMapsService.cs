@@ -1,11 +1,18 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices.JavaScript;
 
 namespace PizzaMeow.GoogleMaps
 {
     public class GoogleMapsService
     {
-        private string apiKey = "AIzaSyAvaAUw5jaYsmIf-nIDK9TvvyGX-CwTGPY";
+        private readonly IConfiguration _configuration;
+        private readonly string apiKey;
+        public GoogleMapsService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+            apiKey = _configuration.GetSection("GoogleMapsApi")["ApiKey"]!;
+        }
 
         public async Task<(double, double)> GetCoordinatesAsync(string street) 
         {
@@ -20,9 +27,9 @@ namespace PizzaMeow.GoogleMaps
 
                 if (results.HasValues)
                 {
-                    var location = results[0]["geometry"]["location"];
-                    double latitude = location["lat"].Value<double>();
-                    double longitude = location["lng"].Value<double>();
+                    var location = results[0]?["geometry"]?["location"];
+                    double latitude = location!["lat"]!.Value<double>();
+                    double longitude = location!["lng"]!.Value<double>();
 
                     return (latitude, longitude);
                 }

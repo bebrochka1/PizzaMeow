@@ -25,6 +25,8 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configuration = builder.Configuration;
+
 builder.Configuration.AddJsonFile("C:\\Users\\User\\source\\repos\\PizzaMeow\\PizzaMeow\\appsettings.Secret.json");
 
 Register(builder.Services);
@@ -50,7 +52,15 @@ app.Run();
 void Register(IServiceCollection services)
 {
     services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen();
+    services.AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "PizzaMeow API",
+            Version = "v1",
+            Description = "Pizza ordering API"
+        });
+    });
 
     services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options =>
@@ -108,7 +118,7 @@ void Register(IServiceCollection services)
         );
 
     services.AddTransient<GoogleMapsService>();
-    services.AddSingleton(new TelegramBotService("7871029034:AAHkFzCmENIgreKd5UUL7MrowKAdutmZzt8", new HttpClient()));
+    services.AddSingleton(new TelegramBotService(configuration.GetSection("TelegramBotApi")["ApiKey"]!.ToString(), new HttpClient()));
 }
 
 void Configure(WebApplication app) 
@@ -124,10 +134,12 @@ void Configure(WebApplication app)
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         db.Database.Migrate();
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "PizzaMeow API v1");
+            c.RoutePrefix = string.Empty;
+        });
     }
-
-    app.MapSwagger().RequireAuthorization();
 
     app.UseHttpsRedirection();
 }
